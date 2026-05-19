@@ -218,6 +218,15 @@ Sanity Ignite uses the `@next/bundle-analyzer` plugin to analyze the bundle size
 ANALYZE=true npm run next:build
 ```
 
+### Run Stripe Webhook Locally
+
+To run the Stripe webhook locally, use the following command in a separate terminal:
+first install the stripe CLI
+```bash
+npm install -g stripe
+stripe listen --forward-to localhost:3000/api/webhook
+```
+
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
