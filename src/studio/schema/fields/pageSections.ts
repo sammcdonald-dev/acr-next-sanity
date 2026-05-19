@@ -1,13 +1,16 @@
 import { defineArrayMember, defineField } from 'sanity';
 import cardGrid from '../objects/sections/cardGrid';
+import classSchedule from '../objects/sections/classSchedule';
 import cta from '../objects/sections/cta';
 import divider from '../objects/sections/divider';
 import hero from '../objects/sections/hero';
 import mediaText from '../objects/sections/mediaText';
 import postList from '../objects/sections/postList';
+import registrationCta from '../objects/sections/registrationCta';
+import registrationForm from '../objects/sections/registrationForm';
 import subscribe from '../objects/sections/subscribe';
 
-const pageSectionsObjects = [cardGrid, cta, divider, hero, mediaText, postList, subscribe];
+const pageSectionsObjects = [cardGrid, classSchedule, cta, divider, hero, mediaText, postList, registrationCta, registrationForm, subscribe];
 
 export default defineField({
   name: 'pageSections',

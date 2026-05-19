@@ -221,17 +221,92 @@ export const cardGridsSectionFragment = /* groq */ `
   },
 `;
 
+export const registrationCtaSectionFragment = /* groq */ `
+  _type,
+  eyebrow,
+  heading,
+  body[]{
+    ...,
+    ${markDefsFragment}
+  },
+  ${buttonsFragment}
+  note,
+  product->{
+    _id,
+    name,
+    "spotsRemaining": select(
+      defined(maxSpots) => maxSpots - count(*[_type == "registration" && references(^._id) && status in ["pending", "confirmed"]]),
+      null
+    )
+  },
+  "uid": uid.current
+`;
+
+export const classScheduleSectionFragment = /* groq */ `
+  _type,
+  eyebrow,
+  heading,
+  body[]{
+    ...,
+    markDefs[]{
+      ...,
+      ...customLink{
+        ${linkFragment}
+      },
+    },
+  },
+  classes[]{
+    _key,
+    title,
+    ageGroup,
+    day,
+    time,
+    rate,
+    description,
+  },
+  "uid": uid.current
+`;
+
+const productWithSpotsFragment = /* groq */ `
+  _id,
+  name,
+  description,
+  stripeMode,
+  "spotsRemaining": select(
+    defined(maxSpots) => maxSpots - count(*[_type == "registration" && references(^._id) && status in ["pending", "confirmed"]]),
+    null
+  )
+`;
+
+export const registrationFormSectionFragment = /* groq */ `
+  _type,
+  heading,
+  body[]{
+    ...,
+    ${markDefsFragment}
+  },
+  submitButtonLabel,
+  "products": select(
+    defined(products) && count(products) > 0 => products[]->{${productWithSpotsFragment}},
+    *[_type == "product"] | order(name asc) {${productWithSpotsFragment}}
+  ),
+  "uid": uid.current
+`;
+
 export const pageBuilderFragment = /* groq */ `
   pageSections[]{
     ...,
     _key,
     _type,
     _type == 'cardGrid' => {${cardGridsSectionFragment}},
+    _type == 'classSchedule' => {${classScheduleSectionFragment}},
     _type == 'cta' => {${ctaSectionFragment}},
     _type == 'divider' => {${dividerSectionFragment}},
     _type == 'hero' => {${heroSectionFragment}},
     _type == 'mediaText' => {${mediaTextSectionFragment}},
     _type == 'postList' => {${postListSectionFragment}},
+    _type == 'registrationCta' => {${registrationCtaSectionFragment}},
+    _type == 'registrationForm' => {${registrationFormSectionFragment}},
     _type == 'subscribe' => {${subscribeSectionFragment}}
   },
 `;

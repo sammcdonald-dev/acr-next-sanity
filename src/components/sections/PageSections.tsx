@@ -6,23 +6,29 @@ import type { ElementType } from 'react';
 import { dataAttr } from '@/lib/sanity/client/utils';
 import type { SectionsType, SectionType } from '@/lib/sanity/queries/fragments/fragment.types';
 import CardGrid from './CardGrid';
+import ClassSchedule from './ClassSchedule';
 import CTA from './CTA';
 import Divider from './Divider';
 import Hero from './Hero';
 import MediaText from './MediaText';
 import PostList from './PostList';
+import RegistrationCta from './RegistrationCta';
+import RegistrationFormSection from './RegistrationFormSection';
 import Subscribe from './Subscribe';
 
 type PageSectionstype = SectionType['_type'];
 
 const SECTION_COMPONENTS: Record<PageSectionstype, ElementType> = {
+  cardGrid: CardGrid,
+  classSchedule: ClassSchedule,
+  cta: CTA,
+  divider: Divider,
   hero: Hero,
   mediaText: MediaText,
-  cta: CTA,
-  subscribe: Subscribe,
   postList: PostList,
-  cardGrid: CardGrid,
-  divider: Divider,
+  registrationCta: RegistrationCta,
+  registrationForm: RegistrationFormSection,
+  subscribe: Subscribe,
 } as const;
 
 type PageSectionsProps = {

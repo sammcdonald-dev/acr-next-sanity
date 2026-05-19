@@ -12,11 +12,14 @@ export type SectionsType = PageFragmentType['pageSections'];
 export type SectionType = NonNullable<SectionsType>[number];
 
 export type CardGridSectionFragmentType = Extract<SectionType, { _type: 'cardGrid' }>;
+export type ClassScheduleSectionFragmentType = Extract<SectionType, { _type: 'classSchedule' }>;
 export type CtaSectionFragmentType = Extract<SectionType, { _type: 'cta' }>;
 export type DividerSectionFragmentType = Extract<SectionType, { _type: 'divider' }>;
 export type HeroSectionFragmentType = Extract<SectionType, { _type: 'hero' }>;
 export type MediaTextSectionFragmentType = Extract<SectionType, { _type: 'mediaText' }>;
 export type PostListSectionFragmentType = Extract<SectionType, { _type: 'postList' }>;
+export type RegistrationCtaSectionFragmentType = Extract<SectionType, { _type: 'registrationCta' }>;
+export type RegistrationFormSectionFragmentType = Extract<SectionType, { _type: 'registrationForm' }>;
 export type SubscribeSectionFragmentType = Extract<SectionType, { _type: 'subscribe' }>;
 
 export type ButtonFragmentType = NonNullable<HeroSectionFragmentType['buttons']>[number];
