@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app/frontend
+      - ./studio:/app/studio
+      - frontend_nm:/app/frontend/node_modules
+      - studio_nm:/app/studio/node_modules
+      - root_nm:/app/node_modules
+    ports:
+      - "3000:3000"
+      - "3333:3333"
+    env_file:
+      - frontend/.env.local
+      - studio/.env
+    environment:
+      - WATCHPACK_POLLING=true
+
+volumes:
+  frontend_nm:
+  studio_nm:
+  root_nm:

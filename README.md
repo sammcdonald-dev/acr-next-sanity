@@ -23,6 +23,51 @@ For this monorepo, set the Vercel project **Root Directory** to `frontend` and a
 
 Install and dev commands are meant to be run from the **repository root** unless noted.
 
+## Docker
+
+Only the **Next.js frontend** is containerized. Sanity's free tier hosts the backend and Studio on `*.sanity.studio` — nothing to containerize there.
+
+| File | Purpose |
+|---|---|
+| `Dockerfile` | Multi-stage production build: `deps` → `builder` → `typecheck` → `runner` |
+| `Dockerfile.dev` | Dev image — installs all workspace deps, runs `pnpm dev` |
+| `docker-compose.dev.yml` | Dev — single container running both Next.js (3000) and Studio (3333) |
+| `docker-compose.yml` | Production image + CI typecheck service |
+| `.dockerignore` | Excludes `node_modules`, `.next`, `.git`, and `studio/.sanity` from the build context |
+| `fly.toml` | Fly.io deployment config (auto-sleep for free tier) |
+
+### Run in development
+
+```bash
+pnpm docker:dev:build   # first run — builds the image
+pnpm docker:dev         # subsequent runs
+```
+
+- Next.js: [http://localhost:3000](http://localhost:3000)
+- Sanity Studio: [http://localhost:3333](http://localhost:3333)
+
+A single container runs `pnpm dev`, which starts both workspaces in parallel. Source files are bind-mounted so edits are reflected immediately. `node_modules` live in named volumes so they are not overridden by the bind mount.
+
+The root `.env` sets `COMPOSE_FILE=docker-compose.dev.yml` so bare `docker compose up` targets dev by default. Override for production/CI:
+
+```bash
+COMPOSE_FILE=docker-compose.yml docker compose up
+```
+
+### Build and run the production image locally
+
+```bash
+pnpm docker:build
+pnpm docker:prod
+# visit http://localhost:3000
+```
+
+### Type-check inside the container
+
+```bash
+pnpm docker:typecheck
+```
+
 ## Getting Started
 
 ### Installing the template
@@ -128,7 +173,33 @@ This template includes components aligned with the [Schema UI](https://schemaui.
 
 Add your production URL to the CORS Origins in your Sanity project settings to allow your deployed site to communicate with Sanity. Also add your deployed Studio origin (for example `https://your-hostname.sanity.studio`) if you host Studio separately.
 
-#### 2. Deploy to Vercel
+#### 2. Deploy to Fly.io (Docker)
+
+1. Install the Fly CLI: `brew install flyctl`
+2. Log in: `fly auth login`
+3. Create the app (first time only, skips auto-deploy):
+   ```bash
+   fly launch --no-deploy
+   ```
+4. Set secrets (do not bake env vars into the image):
+   ```bash
+   fly secrets set \
+     NEXT_PUBLIC_SANITY_PROJECT_ID=xxx \
+     NEXT_PUBLIC_SANITY_DATASET=production \
+     SANITY_API_READ_TOKEN=xxx \
+     NEXT_PUBLIC_SITE_URL=https://your-app.fly.dev \
+     NEXT_PUBLIC_STUDIO_URL=https://your-project.sanity.studio \
+     RESEND_API_KEY=xxx \
+     RESEND_AUDIENCE_ID=xxx
+   ```
+5. Deploy:
+   ```bash
+   fly deploy
+   ```
+
+`fly.toml` is configured with `auto_stop_machines = "stop"` and `min_machines_running = 0` so the app sleeps when idle, keeping usage within free tier limits.
+
+#### 3. Deploy to Vercel
 
 Deploy your website to Vercel:
 
@@ -139,7 +210,7 @@ Deploy your website to Vercel:
 5. Copy the environment variables from `frontend/.env.local` and paste them to your Vercel project settings. Vercel supports pasting all variables at once. Include `NEXT_PUBLIC_STUDIO_URL` pointing at your hosted Studio URL (no trailing slash).
 6. Deploy
 
-#### 3. Deploy Sanity Studio (`sanity deploy`)
+#### 4. Deploy Sanity Studio (`sanity deploy`)
 
 Recommended: host Studio on `*.sanity.studio`.
 
@@ -153,7 +224,7 @@ sanity deploy
 
 After the first deploy, set `SANITY_STUDIO_APP_ID` from the CLI output so later deploys skip the hostname prompt.
 
-#### 4. GitHub Actions (Studio)
+#### 5. GitHub Actions (Studio)
 
 The repo includes [`.github/workflows/deploy-studio.yml`](.github/workflows/deploy-studio.yml): it deploys Studio when `studio/**` changes on **`master`** or **`develop`**.
 
@@ -164,7 +235,7 @@ Configure GitHub **Environments** (`Production` for `master`, `development` for 
 
 See the workflow file for the exact names checked during deploy.
 
-#### 5. Deploy Studio to Vercel (optional)
+#### 6. Deploy Studio to Vercel (optional)
 
 Create a separate Vercel project with **Root Directory** `studio` and the same `studio` environment variables as in `studio/.env.local`.
 

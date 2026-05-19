@@ -1,0 +1,19 @@
+services:
+  typecheck:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: typecheck
+    env_file:
+      - frontend/.env.local
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - frontend/.env.local
+    environment:
+      - NODE_ENV=production
