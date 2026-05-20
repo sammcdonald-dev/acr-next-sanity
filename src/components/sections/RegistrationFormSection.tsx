@@ -15,7 +15,7 @@ function FormWithSearchParams({ section }: Props) {
   const { heading, body, submitButtonLabel, products, uid } = section;
 
   return (
-    <section id={uid ?? undefined} className="min-h-screen bg-gray-50 py-16">
+    <section id={uid ?? undefined} className="min-h-screen py-16">
       <div className="container mx-auto max-w-2xl px-4">
         {heading && (
           <h1 className="mb-2 text-3xl font-bold text-gray-900">{heading}</h1>

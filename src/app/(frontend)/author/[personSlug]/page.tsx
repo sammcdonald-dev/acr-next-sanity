@@ -15,6 +15,8 @@ type Props = {
   params: Promise<{ personSlug: string }>;
 };
 
+export const revalidate = false;
+
 const loadData = async (props: Props) => {
   const { personSlug } = await props.params;
 
@@ -25,10 +27,12 @@ const loadData = async (props: Props) => {
     sanityFetch({
       query: postsArchiveQuery,
       params: { from, to, filters: { personSlug } },
+      tags: ['post'],
     }),
     sanityFetch({
       query: personQuery,
       params: { slug: personSlug },
+      tags: ['person'],
     }),
   ]);
 

@@ -29,10 +29,12 @@ const loadData = async (props: Props) => {
     sanityFetch({
       query: postsArchiveQuery,
       params: { from, to, filters: { personSlug } },
+      tags: ['post'],
     }),
     sanityFetch({
       query: personQuery,
       params: { slug: personSlug },
+      tags: ['person'],
     }),
   ]);
 
@@ -62,7 +64,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-// Return a list of `params` to populate the [slug] dynamic segment
+export const revalidate = false;
+
 export async function generateStaticParams() {
   return [];
 }

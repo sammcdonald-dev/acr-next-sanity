@@ -12,12 +12,15 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export const revalidate = false;
+
 const loadData = async (props: Props): Promise<PostQueryResult> => {
   const { slug } = await props.params;
 
   const { data: post } = await sanityFetch({
     query: postQuery,
     params: { slug },
+    tags: ['post'],
   });
 
   return post;

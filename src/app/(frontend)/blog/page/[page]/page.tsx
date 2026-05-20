@@ -30,6 +30,7 @@ const loadPostsPageData = async (
   const [{ data: blogPageData }, { data: posts }] = await Promise.all([
     sanityFetch({
       query: blogPageQuery,
+      tags: ['blogPage'],
     }),
     sanityFetch({
       query: postsArchiveQuery,
@@ -38,6 +39,7 @@ const loadPostsPageData = async (
         to: pageNumber * POSTS_PER_PAGE - 1,
         filters: {},
       },
+      tags: ['post'],
     }),
   ]);
 
@@ -63,6 +65,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   return seo;
 }
+
+export const revalidate = false;
 
 export async function generateStaticParams() {
   return [];

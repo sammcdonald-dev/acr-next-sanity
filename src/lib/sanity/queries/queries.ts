@@ -68,6 +68,10 @@ export const personQuery = defineQuery(`
   }
 `);
 
+export const pageSlugs = defineQuery(`
+  *[_type == "page" && defined(slug.current)][0..$limit].slug.current
+`);
+
 export const postPagesSlugs = defineQuery(`
   *[_type == "post" && defined(slug.current)][0..$limit].slug.current
 `);

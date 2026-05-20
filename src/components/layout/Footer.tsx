@@ -6,6 +6,7 @@ import { Button } from '../ui/Button';
 export default async function Footer() {
   const { data: settings } = await sanityFetch({
     query: settingsQuery,
+    tags: ['settings'],
   });
 
   if (!settings) {

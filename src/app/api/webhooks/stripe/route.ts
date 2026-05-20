@@ -18,6 +18,10 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Missing stripe-signature header' }, { status: 400 });
   }
 
+  if (!serverEnv.STRIPE_WEBHOOK_SECRET) {
+    return Response.json({ error: 'Webhook secret not configured' }, { status: 500 });
+  }
+
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(body, signature, serverEnv.STRIPE_WEBHOOK_SECRET);

@@ -9,6 +9,8 @@ import { formatMetaData } from '@/lib/sanity/client/seo';
 import { blogPageQuery, postsArchiveQuery } from '@/lib/sanity/queries/queries';
 import type { BlogPageQueryResult, PostsArchiveQueryResult } from '@/sanity.types';
 
+export const revalidate = false;
+
 const loadPostsPageData = async (): Promise<{
   blogPage: BlogPageQueryResult;
   posts: PaginatedResult<PostsArchiveQueryResult>;
@@ -16,10 +18,12 @@ const loadPostsPageData = async (): Promise<{
   const [{ data: blogPageData }, { data: posts }] = await Promise.all([
     sanityFetch({
       query: blogPageQuery,
+      tags: ['blogPage'],
     }),
     sanityFetch({
       query: postsArchiveQuery,
       params: { from: 0, to: POSTS_PER_PAGE - 1, filters: {} },
+      tags: ['post'],
     }),
   ]);
 

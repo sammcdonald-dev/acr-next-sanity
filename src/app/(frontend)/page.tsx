@@ -4,9 +4,12 @@ import { sanityFetch } from '@/lib/sanity/client/live';
 import { formatMetaData } from '@/lib/sanity/client/seo';
 import { homePageQuery } from '@/lib/sanity/queries/queries';
 
+export const revalidate = false;
+
 export async function generateMetadata() {
   const { data: homePage } = await sanityFetch({
     query: homePageQuery,
+    tags: ['homePage'],
   });
 
   if (!homePage?.seo) {
@@ -19,6 +22,7 @@ export async function generateMetadata() {
 export default async function Page() {
   const { data: homePage } = await sanityFetch({
     query: homePageQuery,
+    tags: ['homePage'],
   });
 
   if (!homePage) {
