@@ -1,6 +1,6 @@
 node_modules
 .next
-.sanity
+.sanity/schema.json
 .env*.local
 .env
 .git
