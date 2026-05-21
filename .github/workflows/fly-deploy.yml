@@ -1,0 +1,28 @@
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  deploy:
+    name: Deploy ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    concurrency: deploy-${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to production
+        if: github.ref_name == 'main'
+        run: flyctl deploy --remote-only --app acr-next-sanity
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Deploy to staging
+        if: github.ref_name == 'staging'
+        run: flyctl deploy --remote-only --app acr-next-sanity-staging
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
