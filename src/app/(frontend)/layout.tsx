@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <body className="font-inter bg-white text-black">
       <section className="min-h-screen">
-        <Alert />
+        {/*<Alert />*/}
         <Toaster />
         <Header />
         <Main>{children}</Main>
