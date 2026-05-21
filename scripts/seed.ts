@@ -1,9 +1,11 @@
 import { createClient, type SanityClient } from '@sanity/client';
 
+const now = new Date().toISOString();
+
 const client: SanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  apiVersion: '2026-08-22', // update to use a recent date string UTC
+  apiVersion: now, // update to use a recent date string UTC
   token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false,
 });
