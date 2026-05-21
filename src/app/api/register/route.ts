@@ -3,18 +3,6 @@ import { clientEnv } from '@/env/clientEnv';
 import { serverEnv } from '@/env/serverEnv';
 import { client } from '@/lib/sanity/client/client';
 
-const stripe = new Stripe(serverEnv.STRIPE_SECRET_KEY);
-
-const readClient = client.withConfig({
-  token: serverEnv.SANITY_API_READ_TOKEN,
-  useCdn: false,
-});
-
-const writeClient = client.withConfig({
-  token: serverEnv.SANITY_API_WRITE_TOKEN,
-  useCdn: false,
-});
-
 const productQuery = /* groq */ `
   *[_type == "product" && _id == $productId][0]{
     _id,
@@ -41,6 +29,10 @@ type Parent = {
 };
 
 export async function POST(req: Request) {
+  const stripe = new Stripe(serverEnv.STRIPE_SECRET_KEY);
+  const readClient = client.withConfig({ token: serverEnv.SANITY_API_READ_TOKEN, useCdn: false });
+  const writeClient = client.withConfig({ token: serverEnv.SANITY_API_WRITE_TOKEN, useCdn: false });
+
   const body = await req.json();
   const { productId, student, parent } = body as {
     productId: string;

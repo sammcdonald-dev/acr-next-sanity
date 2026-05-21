@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { stripe } from '../../../lib/stripe'
+import { getStripe } from '../../../lib/stripe'
 
 export async function POST() {
   try {
@@ -8,7 +8,7 @@ export async function POST() {
     const origin = headersList.get('origin')
 
     // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       line_items: [
         {
           // Provide the exact Price ID (for example, price_1234) of the product you want to sell

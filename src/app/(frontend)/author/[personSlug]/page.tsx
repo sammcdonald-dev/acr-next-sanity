@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Page from '@/components/templates/Page';
 import PersonArchiveByline from '@/components/templates/PersonArchiveByline';
 import PostRiver from '@/components/templates/PostRiver';
-import { serverEnv } from '@/env/serverEnv';
+import { clientEnv } from '@/env/clientEnv';
 import { POSTS_PER_PAGE } from '@/lib/constants';
 import { getDocumentLink } from '@/lib/links';
 import { paginatedData } from '@/lib/pagination';
@@ -60,7 +60,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 // Return a list of `params` to populate the [slug] dynamic segment
 export async function generateStaticParams() {
   const slugs = await client.fetch(personSlugs, {
-    limit: serverEnv.MAX_STATIC_PARAMS,
+    limit: clientEnv.MAX_STATIC_PARAMS,
   });
 
   return slugs

@@ -1,13 +1,14 @@
-import 'server-only'
+import 'server-only';
 
-import Stripe from 'stripe'
+import Stripe from 'stripe';
 
-const key = process.env.STRIPE_SECRET_KEY
+let _stripe: Stripe | null = null;
 
-if (!key && !process.env.SKIP_ENV_VALIDATION) {
-  throw new Error('STRIPE_SECRET_KEY is not set')
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) throw new Error('STRIPE_SECRET_KEY is not set');
+    _stripe = new Stripe(key);
+  }
+  return _stripe;
 }
-
-// During build (SKIP_ENV_VALIDATION=1) key is undefined — skip instantiation.
-// Routes are only imported for analysis at build time, never executed.
-export const stripe = key ? new Stripe(key) : (null as unknown as Stripe)

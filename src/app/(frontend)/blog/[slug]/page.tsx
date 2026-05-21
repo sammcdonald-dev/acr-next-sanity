@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Post from '@/components/templates/Post';
-import { serverEnv } from '@/env/serverEnv';
+import { clientEnv } from '@/env/clientEnv';
 import { getDocumentLink } from '@/lib/links';
 import { client } from '@/lib/sanity/client/client';
 import { sanityFetch } from '@/lib/sanity/client/live';
@@ -43,7 +43,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 // Return a list of `params` to populate the [slug] dynamic segment
 export async function generateStaticParams() {
   const slugs = await client.fetch(postPagesSlugs, {
-    limit: serverEnv.MAX_STATIC_PARAMS,
+    limit: clientEnv.MAX_STATIC_PARAMS,
   });
 
   const staticParams = slugs

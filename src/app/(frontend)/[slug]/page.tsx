@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PageSections from '@/components/sections/PageSections';
-import { serverEnv } from '@/env/serverEnv';
+import { clientEnv } from '@/env/clientEnv';
 import { client } from '@/lib/sanity/client/client';
 import { sanityFetch } from '@/lib/sanity/client/live';
 import { formatMetaData } from '@/lib/sanity/client/seo';
@@ -15,7 +15,7 @@ type Props = {
 
 export async function generateStaticParams() {
   const slugs = await client.fetch(pageSlugs, {
-    limit: serverEnv.MAX_STATIC_PARAMS,
+    limit: clientEnv.MAX_STATIC_PARAMS,
   });
 
   return slugs

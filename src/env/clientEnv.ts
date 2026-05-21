@@ -4,6 +4,7 @@ const clientEnv = {
   NEXT_PUBLIC_SANITY_API_VERSION: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '',
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || '',
   NEXT_PUBLIC_SANITY_STUDIO_URL: process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || '',
+  MAX_STATIC_PARAMS: parseInt(process.env.MAX_STATIC_PARAMS || '100', 10),
 } as const;
 
 export { clientEnv };

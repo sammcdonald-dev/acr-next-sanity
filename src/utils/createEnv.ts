@@ -5,22 +5,34 @@ function createEnv<T extends v.ObjectEntries>(envSchema: T) {
     throw new Error('process is not available. This function should run in a Node.js environment.');
   }
 
-  if (process.env.SKIP_ENV_VALIDATION) {
-    return {} as v.InferOutput<v.ObjectSchema<T, undefined>>;
+  type EnvType = v.InferOutput<v.ObjectSchema<T, undefined>>;
+  let validated: EnvType | null = null;
+
+  function validate(): EnvType {
+    if (validated) return validated;
+    if (process.env.SKIP_ENV_VALIDATION) {
+      validated = {} as EnvType;
+      return validated;
+    }
+    type EnvKeys = keyof typeof envSchema;
+    const envObj = Object.keys(envSchema).reduce(
+      (acc, key) => {
+        if (key in process.env) {
+          acc[key as EnvKeys] = process.env[key];
+        }
+        return acc;
+      },
+      {} as Partial<Record<EnvKeys, string>>,
+    );
+    validated = v.parse(v.object(envSchema), envObj);
+    return validated;
   }
 
-  type EnvKeys = keyof typeof envSchema;
-  const envObj: Partial<Record<EnvKeys, string>> = Object.keys(envSchema).reduce(
-    (acc, key) => {
-      if (key in process.env) {
-        acc[key as EnvKeys] = process.env[key];
-      }
-      return acc;
+  return new Proxy({} as EnvType, {
+    get(_, key) {
+      return validate()[key as keyof EnvType];
     },
-    {} as Partial<Record<EnvKeys, string>>,
-  );
-
-  const schema = v.object(envSchema);
-  return v.parse(schema, envObj);
+  });
 }
+
 export { createEnv };

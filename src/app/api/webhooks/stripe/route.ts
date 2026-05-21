@@ -3,14 +3,9 @@ import StripeSDK from 'stripe';
 import { serverEnv } from '@/env/serverEnv';
 import { client } from '@/lib/sanity/client/client';
 
-const stripe = new StripeSDK(serverEnv.STRIPE_SECRET_KEY);
-
-const writeClient = client.withConfig({
-  token: serverEnv.SANITY_API_WRITE_TOKEN,
-  useCdn: false,
-});
-
 export async function POST(req: Request) {
+  const stripe = new StripeSDK(serverEnv.STRIPE_SECRET_KEY);
+  const writeClient = client.withConfig({ token: serverEnv.SANITY_API_WRITE_TOKEN, useCdn: false });
   const body = await req.text();
   const signature = req.headers.get('stripe-signature');
 

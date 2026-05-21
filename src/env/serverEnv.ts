@@ -9,13 +9,6 @@ const envSchema = {
   STRIPE_SECRET_KEY: v.pipe(v.string(), v.minLength(1)),
   STRIPE_WEBHOOK_SECRET: v.optional(v.pipe(v.string(), v.minLength(1))),
   SANITY_WEBHOOK_SECRET: v.optional(v.pipe(v.string(), v.minLength(1))),
-  MAX_STATIC_PARAMS: v.pipe(
-    v.string(),
-    v.transform(parseInt),
-    v.number(),
-    v.minValue(1),
-    v.maxValue(1000),
-  ),
 };
 const serverEnv = createEnv(envSchema);
 export { serverEnv };
