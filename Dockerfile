@@ -9,8 +9,20 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# sanity.types.ts is pre-committed, so we skip typegen and run next build directly
-# SKIP_ENV_VALIDATION bypasses runtime env checks during build (secrets aren't available yet)
+
+# Public env vars must be baked into the bundle at build time
+ARG NEXT_PUBLIC_SANITY_PROJECT_ID
+ARG NEXT_PUBLIC_SANITY_DATASET
+ARG NEXT_PUBLIC_SANITY_API_VERSION
+ARG NEXT_PUBLIC_SANITY_STUDIO_URL
+ARG NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_SANITY_PROJECT_ID=$NEXT_PUBLIC_SANITY_PROJECT_ID
+ENV NEXT_PUBLIC_SANITY_DATASET=$NEXT_PUBLIC_SANITY_DATASET
+ENV NEXT_PUBLIC_SANITY_API_VERSION=$NEXT_PUBLIC_SANITY_API_VERSION
+ENV NEXT_PUBLIC_SANITY_STUDIO_URL=$NEXT_PUBLIC_SANITY_STUDIO_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+
+# SKIP_ENV_VALIDATION bypasses server-only secret checks during build (secrets aren't available yet)
 ENV SKIP_ENV_VALIDATION=1
 RUN npx next build
 
