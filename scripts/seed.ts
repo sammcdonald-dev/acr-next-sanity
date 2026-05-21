@@ -3,7 +3,7 @@ import { createClient, type SanityClient } from '@sanity/client';
 const client: SanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-08-22',
+  apiVersion: '2026-08-22', // update to use a recent date string UTC
   token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false,
 });
