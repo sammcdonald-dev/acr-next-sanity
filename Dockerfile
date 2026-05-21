@@ -10,6 +10,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # sanity.types.ts is pre-committed, so we skip typegen and run next build directly
+# SKIP_ENV_VALIDATION bypasses runtime env checks during build (secrets aren't available yet)
+ENV SKIP_ENV_VALIDATION=1
 RUN npx next build
 
 # Stage 3: Minimal production image

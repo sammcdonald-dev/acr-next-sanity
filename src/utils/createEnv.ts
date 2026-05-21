@@ -5,6 +5,10 @@ function createEnv<T extends v.ObjectEntries>(envSchema: T) {
     throw new Error('process is not available. This function should run in a Node.js environment.');
   }
 
+  if (process.env.SKIP_ENV_VALIDATION) {
+    return {} as v.InferOutput<v.ObjectSchema<T, undefined>>;
+  }
+
   type EnvKeys = keyof typeof envSchema;
   const envObj: Partial<Record<EnvKeys, string>> = Object.keys(envSchema).reduce(
     (acc, key) => {
