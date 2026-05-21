@@ -14,10 +14,9 @@ coverage
 /out/
 
 # sanity
-.sanity
+.sanity/schema.json
 dist
 schema.json
-#sanity.types.ts
 
 # misc
 .DS_Store
