@@ -6,7 +6,6 @@ import { client } from '@/lib/sanity/client/client';
 import { sanityFetch } from '@/lib/sanity/client/live';
 import { formatMetaData } from '@/lib/sanity/client/seo';
 import { getPageQuery, pageSlugs } from '@/lib/sanity/queries/queries';
-import { string } from 'valibot';
 
 export const revalidate = false;
 
@@ -20,7 +19,7 @@ export async function generateStaticParams() {
   });
 
   return slugs
-    ? slugs.filter((slug: string | null): slug is string => slug !== null).map((slug) => ({ slug })) : [];
+    ? slugs.filter((slug: string | null): slug is string => slug !== null).map((slug: string) => ({ slug })) : [];
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

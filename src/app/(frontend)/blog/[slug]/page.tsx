@@ -47,7 +47,7 @@ export async function generateStaticParams() {
   });
 
   const staticParams = slugs
-    ? slugs.filter((slug) => slug !== null).map((slug) => ({ slug: slug }))
+    ? slugs.filter((slug: string | null): slug is string => slug !== null).map((slug) => ({ slug }))
     : [];
 
   return [...staticParams];
