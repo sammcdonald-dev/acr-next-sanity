@@ -89,6 +89,33 @@ export default defineType({
       readOnly: true,
     }),
     defineField({
+      name: 'stripeCustomerId',
+      title: 'Stripe Customer ID',
+      type: 'string',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'stripeSubscriptionId',
+      title: 'Stripe Subscription ID',
+      type: 'string',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'subscriptionStatus',
+      title: 'Subscription Status',
+      type: 'string',
+      description: 'Only populated for monthly subscription programs.',
+      options: {
+        list: [
+          { title: 'Active', value: 'active' },
+          { title: 'Past Due', value: 'past_due' },
+          { title: 'Canceled', value: 'canceled' },
+        ],
+        layout: 'radio',
+      },
+      readOnly: true,
+    }),
+    defineField({
       name: 'submittedAt',
       title: 'Submitted At',
       type: 'datetime',
@@ -103,7 +130,8 @@ export default defineType({
       status: 'status',
     },
     prepare({ first, last, product, status }) {
-      const statusEmoji = status === 'confirmed' ? '✓' : status === 'cancelled' ? '✗' : '…';
+      const statusEmoji =
+        status === 'confirmed' ? '✓' : status === 'cancelled' ? '✗' : '…';
       return {
         title: `${first ?? ''} ${last ?? ''}`.trim() || 'Unknown',
         subtitle: `${product ?? 'No product'} — ${statusEmoji} ${status}`,

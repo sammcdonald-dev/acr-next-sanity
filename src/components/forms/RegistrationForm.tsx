@@ -8,7 +8,17 @@ type Product = {
   description: string | null;
   stripeMode: 'payment' | 'subscription' | null;
   spotsRemaining: number | null;
+  termEndDate: string | null;
 };
+
+function formatTermEndDate(termEndDate: string): string {
+  return new Date(`${termEndDate}T00:00:00Z`).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
 
 type Props = {
   products: Product[];
@@ -102,7 +112,10 @@ export default function RegistrationForm({
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-gray-800">Program</h2>
         <div>
-          <label htmlFor="productId" className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="productId"
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
             Select a program <span className="text-red-500">*</span>
           </label>
           <select
@@ -119,6 +132,9 @@ export default function RegistrationForm({
                 {p.spotsRemaining !== null
                   ? ` (${p.spotsRemaining} spot${p.spotsRemaining === 1 ? '' : 's'} left)`
                   : ''}
+                {p.stripeMode === 'subscription' && p.termEndDate
+                  ? ` — monthly through ${formatTermEndDate(p.termEndDate)}`
+                  : ''}
               </option>
             ))}
           </select>
@@ -127,24 +143,89 @@ export default function RegistrationForm({
 
       {/* Student / camper info */}
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">Student / Camper</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-800">
+          Student / Camper
+        </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="First name" id="studentFirstName" value={form.studentFirstName} onChange={set('studentFirstName')} required />
-          <Field label="Last name" id="studentLastName" value={form.studentLastName} onChange={set('studentLastName')} required />
-          <Field label="Email" id="studentEmail" type="email" value={form.studentEmail} onChange={set('studentEmail')} required />
-          <Field label="Phone" id="studentPhone" type="tel" value={form.studentPhone} onChange={set('studentPhone')} required />
-          <Field label="Age" id="studentAge" type="number" min="1" max="100" value={form.studentAge} onChange={set('studentAge')} required />
+          <Field
+            label="First name"
+            id="studentFirstName"
+            value={form.studentFirstName}
+            onChange={set('studentFirstName')}
+            required
+          />
+          <Field
+            label="Last name"
+            id="studentLastName"
+            value={form.studentLastName}
+            onChange={set('studentLastName')}
+            required
+          />
+          <Field
+            label="Email"
+            id="studentEmail"
+            type="email"
+            value={form.studentEmail}
+            onChange={set('studentEmail')}
+            required
+          />
+          <Field
+            label="Phone"
+            id="studentPhone"
+            type="tel"
+            value={form.studentPhone}
+            onChange={set('studentPhone')}
+            required
+          />
+          <Field
+            label="Age"
+            id="studentAge"
+            type="number"
+            min="1"
+            max="100"
+            value={form.studentAge}
+            onChange={set('studentAge')}
+            required
+          />
         </div>
       </section>
 
       {/* Parent / guardian info */}
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">Parent / Guardian</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-800">
+          Parent / Guardian
+        </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="First name" id="parentFirstName" value={form.parentFirstName} onChange={set('parentFirstName')} required />
-          <Field label="Last name" id="parentLastName" value={form.parentLastName} onChange={set('parentLastName')} required />
-          <Field label="Email" id="parentEmail" type="email" value={form.parentEmail} onChange={set('parentEmail')} required />
-          <Field label="Phone" id="parentPhone" type="tel" value={form.parentPhone} onChange={set('parentPhone')} required />
+          <Field
+            label="First name"
+            id="parentFirstName"
+            value={form.parentFirstName}
+            onChange={set('parentFirstName')}
+            required
+          />
+          <Field
+            label="Last name"
+            id="parentLastName"
+            value={form.parentLastName}
+            onChange={set('parentLastName')}
+            required
+          />
+          <Field
+            label="Email"
+            id="parentEmail"
+            type="email"
+            value={form.parentEmail}
+            onChange={set('parentEmail')}
+            required
+          />
+          <Field
+            label="Phone"
+            id="parentPhone"
+            type="tel"
+            value={form.parentPhone}
+            onChange={set('parentPhone')}
+            required
+          />
         </div>
       </section>
 
@@ -176,10 +257,22 @@ type FieldProps = {
   max?: string;
 };
 
-function Field({ label, id, value, onChange, type = 'text', required, min, max }: FieldProps) {
+function Field({
+  label,
+  id,
+  value,
+  onChange,
+  type = 'text',
+  required,
+  min,
+  max,
+}: FieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-medium text-gray-700">
+      <label
+        htmlFor={id}
+        className="mb-1 block text-sm font-medium text-gray-700"
+      >
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input

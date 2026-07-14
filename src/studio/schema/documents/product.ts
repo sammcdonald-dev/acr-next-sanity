@@ -29,7 +29,8 @@ export default defineType({
       name: 'stripePriceId',
       title: 'Stripe Price ID',
       type: 'string',
-      description: 'Find this in Stripe Dashboard → Products → select product → copy the Price ID (starts with price_)',
+      description:
+        'Find this in Stripe Dashboard → Products → select product → copy the Price ID (starts with price_)',
       validation: (Rule) =>
         Rule.required().custom((value) => {
           if (value && !value.startsWith('price_')) {
@@ -53,10 +54,39 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'termStartDate',
+      title: 'Term Start Date',
+      type: 'date',
+      description:
+        'Informational — shown to families. E.g. the first day of the Fall or Spring semester.',
+      hidden: ({ parent }) => parent?.stripeMode !== 'subscription',
+    }),
+    defineField({
+      name: 'termEndDate',
+      title: 'Term End Date (billing stops after this date)',
+      type: 'date',
+      description:
+        'Monthly billing automatically cancels after this date — e.g. the last day of the Fall or Spring semester.',
+      hidden: ({ parent }) => parent?.stripeMode !== 'subscription',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as
+            | { stripeMode?: string; termStartDate?: string }
+            | undefined;
+          if (parent?.stripeMode !== 'subscription') return true;
+          if (!value) return 'Required for subscription programs';
+          if (parent.termStartDate && value < parent.termStartDate) {
+            return 'Term end date must be on or after the term start date';
+          }
+          return true;
+        }),
+    }),
+    defineField({
       name: 'maxSpots',
       title: 'Max Spots',
       type: 'number',
-      description: 'Leave blank for unlimited. When set, registrations are capped at this number.',
+      description:
+        'Leave blank for unlimited. When set, registrations are capped at this number.',
       validation: (Rule) => Rule.min(1).integer(),
     }),
   ],

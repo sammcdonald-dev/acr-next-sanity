@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { clientEnv } from '@/env/clientEnv';
 import { serverEnv } from '@/env/serverEnv';
 import { client } from '@/lib/sanity/client/client';
+import { getTermCancelAtUnix } from '@/lib/subscriptionTerm';
 
 const productQuery = /* groq */ `
   *[_type == "product" && _id == $productId][0]{
@@ -9,6 +10,7 @@ const productQuery = /* groq */ `
     stripePriceId,
     stripeMode,
     maxSpots,
+    termEndDate,
     "registrationCount": count(*[_type == "registration" && references(^._id) && status in ["pending", "confirmed"]])
   }
 `;
@@ -30,8 +32,14 @@ type Parent = {
 
 export async function POST(req: Request) {
   const stripe = new Stripe(serverEnv.STRIPE_SECRET_KEY);
-  const readClient = client.withConfig({ token: serverEnv.SANITY_API_READ_TOKEN, useCdn: false });
-  const writeClient = client.withConfig({ token: serverEnv.SANITY_API_WRITE_TOKEN, useCdn: false });
+  const readClient = client.withConfig({
+    token: serverEnv.SANITY_API_READ_TOKEN,
+    useCdn: false,
+  });
+  const writeClient = client.withConfig({
+    token: serverEnv.SANITY_API_WRITE_TOKEN,
+    useCdn: false,
+  });
 
   const body = await req.json();
   const { productId, student, parent } = body as {
@@ -49,6 +57,7 @@ export async function POST(req: Request) {
     stripePriceId: string;
     stripeMode: 'payment' | 'subscription';
     maxSpots: number | null;
+    termEndDate: string | null;
     registrationCount: number;
   } | null>(productQuery, { productId });
 
@@ -56,8 +65,23 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Product not found' }, { status: 404 });
   }
 
-  if (product.maxSpots != null && product.registrationCount >= product.maxSpots) {
+  if (
+    product.maxSpots != null &&
+    product.registrationCount >= product.maxSpots
+  ) {
     return Response.json({ error: 'This program is full' }, { status: 409 });
+  }
+
+  let termCancelAtUnix: number | undefined;
+  if (product.stripeMode === 'subscription' && product.termEndDate) {
+    try {
+      termCancelAtUnix = getTermCancelAtUnix(product.termEndDate);
+    } catch {
+      return Response.json(
+        { error: 'Registration for this term has closed' },
+        { status: 400 }
+      );
+    }
   }
 
   const registration = await writeClient.create({
@@ -87,6 +111,12 @@ export async function POST(req: Request) {
     metadata: { registrationId: registration._id },
     success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/checkout/cancel`,
+    ...(product.stripeMode === 'subscription' && {
+      subscription_data: {
+        metadata: { registrationId: registration._id },
+        ...(termCancelAtUnix && { cancel_at: termCancelAtUnix }),
+      },
+    }),
   });
 
   await writeClient

@@ -272,6 +272,8 @@ const productWithSpotsFragment = /* groq */ `
   name,
   description,
   stripeMode,
+  termStartDate,
+  termEndDate,
   "spotsRemaining": select(
     defined(maxSpots) => maxSpots - count(*[_type == "registration" && references(^._id) && status in ["pending", "confirmed"]]),
     null
