@@ -108,13 +108,19 @@ export async function POST(req: Request) {
     customer_email: parent.email,
     // Session expires after 1 hour so pending spots free up promptly
     expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
-    metadata: { registrationId: registration._id },
+    // termCancelAtUnix can't be set via subscription_data at Checkout Session
+    // creation (Stripe rejects `subscription_data[cancel_at]`); it's stashed
+    // here so the webhook can apply it with subscriptions.update() once the
+    // subscription actually exists.
+    metadata: {
+      registrationId: registration._id,
+      ...(termCancelAtUnix && { termCancelAtUnix: String(termCancelAtUnix) }),
+    },
     success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/checkout/cancel`,
     ...(product.stripeMode === 'subscription' && {
       subscription_data: {
         metadata: { registrationId: registration._id },
-        ...(termCancelAtUnix && { cancel_at: termCancelAtUnix }),
       },
     }),
   });

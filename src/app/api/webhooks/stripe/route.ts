@@ -14,6 +14,7 @@ function toId(
 
 async function handleCheckoutSessionEvent(
   event: Stripe.Event,
+  stripe: Stripe,
   writeClient: SanityClient
 ) {
   const session = event.data.object as Stripe.Checkout.Session;
@@ -22,6 +23,17 @@ async function handleCheckoutSessionEvent(
   if (!registrationId) return;
 
   if (event.type === 'checkout.session.completed') {
+    const subscriptionId = toId(session.subscription);
+
+    if (session.mode === 'subscription' && subscriptionId) {
+      const termCancelAtUnix = session.metadata?.termCancelAtUnix;
+      if (termCancelAtUnix) {
+        await stripe.subscriptions.update(subscriptionId, {
+          cancel_at: Number(termCancelAtUnix),
+        });
+      }
+    }
+
     await writeClient
       .patch(registrationId)
       .set(
@@ -29,7 +41,7 @@ async function handleCheckoutSessionEvent(
           ? {
               status: 'confirmed',
               stripeCustomerId: toId(session.customer),
-              stripeSubscriptionId: toId(session.subscription),
+              stripeSubscriptionId: subscriptionId,
               subscriptionStatus: 'active',
             }
           : { status: 'confirmed' }
@@ -136,7 +148,7 @@ export async function POST(req: Request) {
     event.type === 'checkout.session.completed' ||
     event.type === 'checkout.session.expired'
   ) {
-    await handleCheckoutSessionEvent(event, writeClient);
+    await handleCheckoutSessionEvent(event, stripe, writeClient);
   }
 
   if (

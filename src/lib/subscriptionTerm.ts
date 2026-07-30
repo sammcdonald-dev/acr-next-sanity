@@ -1,7 +1,9 @@
 /**
- * Converts a term end date (YYYY-MM-DD) into the Unix timestamp Stripe should
- * use for `subscription_data.cancel_at`, so the subscription's final billing
- * cycle still falls within the term before it auto-cancels.
+ * Converts a term end date (YYYY-MM-DD) into the Unix timestamp used for the
+ * subscription's `cancel_at` (applied via subscriptions.update() once the
+ * subscription exists — Checkout Session's subscription_data doesn't accept
+ * cancel_at), so the subscription's final billing cycle still falls within
+ * the term before it auto-cancels.
  */
 export function getTermCancelAtUnix(
   termEndDate: string,
