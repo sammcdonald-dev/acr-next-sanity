@@ -3,11 +3,18 @@
  * file, it will not be tree shaken effectively across routes
  */
 
-import { Inter } from 'next/font/google';
+import { Fredoka, Inter } from 'next/font/google';
 
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
+  display: 'swap',
+});
+
+const fredoka = Fredoka({
+  variable: '--font-fredoka',
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
   display: 'swap',
 });
 
@@ -17,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={`${inter.variable} ${fredoka.variable}`}>
       {children}
     </html>
   );

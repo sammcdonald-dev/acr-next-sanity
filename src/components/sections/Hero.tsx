@@ -5,19 +5,31 @@ import { urlForImage } from '@/lib/sanity/client/utils';
 import type { HeroSectionFragmentType } from '@/lib/sanity/queries/fragments/fragment.types';
 import ButtonsGroup from '../modules/ButtonsGroup';
 
-export default function HeroSection({ section }: { section: HeroSectionFragmentType }) {
+export default function HeroSection({
+  section,
+}: {
+  section: HeroSectionFragmentType;
+}) {
   return (
-    <section className="py-10 md:py-14 bg-white">
-      <div className="container mx-auto">
+    <section className="relative overflow-hidden bg-white py-12 md:py-20">
+      <div className="container mx-auto relative">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">{section?.heading}</h1>
-            <PortableText className="text-xl" value={section.text as PortableTextBlock[]} />
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.05] mb-6 text-navy">
+              {section?.heading}
+            </h1>
+            <PortableText
+              className="text-lg md:text-xl text-navy/80"
+              value={section.text as PortableTextBlock[]}
+            />
 
-            {section?.buttons && section?.buttons.length ? (
+            {section?.buttons?.length ? (
               <div className="mt-8 gap-4 flex">
                 {section?.buttons.length > 1 && (
-                  <ButtonsGroup className="w-full md:w-auto" buttons={section?.buttons} />
+                  <ButtonsGroup
+                    className="w-full md:w-auto"
+                    buttons={section?.buttons}
+                  />
                 )}
               </div>
             ) : null}
@@ -25,15 +37,27 @@ export default function HeroSection({ section }: { section: HeroSectionFragmentT
           <div className="relative">
             {section.image?.asset && (
               <Image
-                src={urlForImage(section.image)?.width(1000).height(667).url() as string}
+                src={
+                  urlForImage(section.image)
+                    ?.width(1000)
+                    .height(667)
+                    .url() as string
+                }
                 alt={section?.image?.alt || ''}
                 width={600}
                 height={400}
-                className="rounded-4xl shadow-xl"
+                className="rounded-4xl shadow-xl relative z-10"
               />
             )}
-            <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-pink-500 rounded-full opacity-50"></div>
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-500 rounded-full opacity-50"></div>
+            <div
+              className="absolute -bottom-6 -left-6 w-28 h-28 bg-gold rounded-full opacity-80 animate-float"
+              aria-hidden
+            />
+            <div
+              className="absolute -top-6 -right-6 w-20 h-20 bg-coral rounded-full opacity-80 animate-float"
+              style={{ animationDelay: '1.5s' }}
+              aria-hidden
+            />
           </div>
         </div>
       </div>

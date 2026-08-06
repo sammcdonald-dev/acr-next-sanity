@@ -1,8 +1,8 @@
 'use client';
 
-import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { PortableTextBlock } from 'next-sanity';
+import { Suspense } from 'react';
 import type { RegistrationFormSectionFragmentType } from '@/lib/sanity/queries/fragments/fragment.types';
 import RegistrationForm from '../forms/RegistrationForm';
 import PortableText from '../modules/PortableText';
@@ -16,12 +16,14 @@ function FormWithSearchParams({ section }: Props) {
 
   return (
     <section id={uid ?? undefined} className="min-h-screen py-16">
-      <div className="container mx-auto max-w-2xl px-4">
+      <div className="container mx-auto max-w-2xl px-4 pt-4">
         {heading && (
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">{heading}</h1>
+          <h1 className="font-display mb-2 text-3xl md:text-4xl font-semibold text-navy">
+            {heading}
+          </h1>
         )}
         {body && (
-          <div className="mb-10 text-gray-500">
+          <div className="mb-10 text-navy/70">
             <PortableText value={body as PortableTextBlock[]} />
           </div>
         )}
@@ -37,7 +39,9 @@ function FormWithSearchParams({ section }: Props) {
 
 export default function RegistrationFormSection({ section }: Props) {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 py-16 animate-pulse" />}>
+    <Suspense
+      fallback={<div className="min-h-screen bg-gray-50 py-16 animate-pulse" />}
+    >
       <FormWithSearchParams section={section} />
     </Suspense>
   );

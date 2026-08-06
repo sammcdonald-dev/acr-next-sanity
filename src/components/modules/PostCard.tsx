@@ -38,7 +38,9 @@ export default function PostCard({ post }: { post: PostCardFragmentType }) {
           <div className="flex items-center space-x-4 mb-2">
             {featuredCategory && (
               <Badge variant="default" asChild>
-                <Link href={getDocumentLink(featuredCategory)}>{featuredCategory.title}</Link>
+                <Link href={getDocumentLink(featuredCategory)}>
+                  {featuredCategory.title}
+                </Link>
               </Badge>
             )}
             <ReadTime wordCount={post.wordCount} />
@@ -48,8 +50,11 @@ export default function PostCard({ post }: { post: PostCardFragmentType }) {
               {new Date(date).toLocaleDateString()}
             </time>
           ) : null}
-          <h3 className="text-2xl font-bold mb-">
-            <Link href={`/blog/${post.slug}`} className="hover:text-pink-600 transition-colors">
+          <h3 className="font-display text-2xl font-semibold mb-2 text-navy">
+            <Link
+              href={`/blog/${post.slug}`}
+              className="hover:text-coral transition-colors"
+            >
               {title}
             </Link>
           </h3>
@@ -63,7 +68,7 @@ export default function PostCard({ post }: { post: PostCardFragmentType }) {
           </div>
           <Link
             href={`/blog/${post.slug}`}
-            className="flex items-center text-pink-600 font-medium hover:text-pink-700 transition-colors"
+            className="flex items-center text-coral font-medium hover:text-coral-dark transition-colors"
           >
             Read More
             <ArrowRight className="w-4 h-4 ml-2" />

@@ -242,6 +242,31 @@ export const registrationCtaSectionFragment = /* groq */ `
   "uid": uid.current
 `;
 
+export const classListSectionFragment = /* groq */ `
+  _type,
+  eyebrow,
+  heading,
+  intro[]{
+    ...,
+    ${markDefsFragment}
+  },
+  classes[]{
+    _key,
+    title,
+    ageGroup,
+    day,
+    time,
+  },
+  button {
+    _type,
+    variant,
+    text,
+    link {
+      ${linkFragment}
+    }
+  }
+`;
+
 export const classScheduleSectionFragment = /* groq */ `
   _type,
   eyebrow,
@@ -295,21 +320,72 @@ export const registrationFormSectionFragment = /* groq */ `
   "uid": uid.current
 `;
 
+export const teamSectionFragment = /* groq */ `
+  _type,
+  eyebrow,
+  heading,
+  intro[]{
+    ...,
+    ${markDefsFragment}
+  },
+  members[]->{
+    ${personFragment}
+  },
+  "uid": uid.current
+`;
+
+export const contactFormSectionFragment = /* groq */ `
+  _type,
+  eyebrow,
+  heading,
+  body[]{
+    ...,
+    ${markDefsFragment}
+  },
+  submitButtonLabel,
+  "uid": uid.current
+`;
+
+export const downloadListSectionFragment = /* groq */ `
+  _type,
+  heading,
+  intro[]{
+    ...,
+    ${markDefsFragment}
+  },
+  files[]{
+    _key,
+    title,
+    file{
+      asset->{
+        url,
+        originalFilename,
+        size
+      }
+    }
+  },
+  "uid": uid.current
+`;
+
 export const pageBuilderFragment = /* groq */ `
   pageSections[]{
     ...,
     _key,
     _type,
     _type == 'cardGrid' => {${cardGridsSectionFragment}},
+    _type == 'classList' => {${classListSectionFragment}},
     _type == 'classSchedule' => {${classScheduleSectionFragment}},
+    _type == 'contactForm' => {${contactFormSectionFragment}},
     _type == 'cta' => {${ctaSectionFragment}},
     _type == 'divider' => {${dividerSectionFragment}},
+    _type == 'downloadList' => {${downloadListSectionFragment}},
     _type == 'hero' => {${heroSectionFragment}},
     _type == 'mediaText' => {${mediaTextSectionFragment}},
     _type == 'postList' => {${postListSectionFragment}},
     _type == 'registrationCta' => {${registrationCtaSectionFragment}},
     _type == 'registrationForm' => {${registrationFormSectionFragment}},
-    _type == 'subscribe' => {${subscribeSectionFragment}}
+    _type == 'subscribe' => {${subscribeSectionFragment}},
+    _type == 'team' => {${teamSectionFragment}}
   },
 `;
 

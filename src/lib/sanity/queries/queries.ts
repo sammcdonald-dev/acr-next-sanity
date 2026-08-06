@@ -11,6 +11,10 @@ import {
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]{
   title,
   description,
+  phone,
+  email,
+  address,
+  socialLinks,
   ${menuFragment}
 }`);
 
