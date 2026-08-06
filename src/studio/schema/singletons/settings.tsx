@@ -29,9 +29,35 @@ export default defineType({
     }),
     defineField({
       name: 'description',
-      description: 'Used both for the <meta> description tag for SEO, and the blog subheader.',
+      description:
+        'Used both for the <meta> description tag for SEO, and the blog subheader.',
       title: 'Description',
       type: 'text',
+    }),
+    defineField({
+      name: 'phone',
+      title: 'Phone Number',
+      description: 'Shown in the top bar and footer.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'email',
+      title: 'Contact Email',
+      description:
+        'Shown in the top bar and footer, and used as the contact form recipient.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'address',
+      title: 'Address',
+      description: 'Shown in the footer.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'socialLinks',
+      title: 'Social Links',
+      type: 'array',
+      of: [{ type: 'socialLink' }],
     }),
     defineField({
       name: 'ogImage',
@@ -53,7 +79,8 @@ export default defineType({
           validation: (rule) => {
             return rule.custom((alt, context) => {
               if (
-                (context.document?.ogImage as { asset?: { _ref?: string } })?.asset?._ref &&
+                (context.document?.ogImage as { asset?: { _ref?: string } })
+                  ?.asset?._ref &&
                 !alt
               ) {
                 return 'Required';

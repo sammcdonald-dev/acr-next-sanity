@@ -10,16 +10,21 @@ import link from './objects/link';
 import menuItem from './objects/menuItem';
 import card from './objects/sections/card';
 import cardGrid from './objects/sections/cardGrid';
+import classList from './objects/sections/classList';
 import classSchedule from './objects/sections/classSchedule';
+import contactForm from './objects/sections/contactForm';
 import cta from './objects/sections/cta';
-import registrationForm from './objects/sections/registrationForm';
 import divider from './objects/sections/divider';
+import downloadList from './objects/sections/downloadList';
 import hero from './objects/sections/hero';
 import mediaText from './objects/sections/mediaText';
 import postList from './objects/sections/postList';
 import registrationCta from './objects/sections/registrationCta';
+import registrationForm from './objects/sections/registrationForm';
 import subscribe from './objects/sections/subscribe';
+import team from './objects/sections/team';
 import seoTypes from './objects/seo';
+import socialLink from './objects/socialLink';
 import blogPage from './singletons/blogPage';
 import homePage from './singletons/homePage';
 import settings from './singletons/settings';
@@ -39,7 +44,9 @@ export const schemaTypes = [
   registration,
 
   // Sections
+  classList,
   classSchedule,
+  contactForm,
   cta,
   registrationForm,
   hero,
@@ -49,12 +56,15 @@ export const schemaTypes = [
   card,
   cardGrid,
   divider,
+  downloadList,
   subscribe,
+  team,
 
   // Objects
   blockContent,
   link,
   button,
   menuItem,
+  socialLink,
   ...seoTypes,
 ];

@@ -3,7 +3,7 @@ import { defineField, defineType } from 'sanity';
 import { createRadioListLayout } from '@/utils/schema';
 import { capitalize } from '@/utils/strings';
 
-const buttonVariants = ['default', 'secondary', 'outline', 'link'];
+const buttonVariants = ['default', 'secondary', 'accent', 'outline', 'link'];
 
 export default defineType({
   name: 'button',
@@ -40,10 +40,18 @@ export default defineType({
       internalUrl: 'url.internal.slug.current',
       openInNewTab: 'url.openInNewTab',
     },
-    prepare: ({ title, variant, externalUrl, urlType, internalUrl, openInNewTab }) => {
+    prepare: ({
+      title,
+      variant,
+      externalUrl,
+      urlType,
+      internalUrl,
+      openInNewTab,
+    }) => {
       const url = urlType === 'external' ? externalUrl : internalUrl;
       const newTabIndicator = openInNewTab ? ' ↗' : '';
-      const truncatedUrl = url?.length > 30 ? `${url.substring(0, 30)}...` : url;
+      const truncatedUrl =
+        url?.length > 30 ? `${url.substring(0, 30)}...` : url;
 
       return {
         title: title || 'Untitled Button',

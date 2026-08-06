@@ -1,9 +1,17 @@
-import type { GetPageQueryResult, PostQueryResult, PostsArchiveQueryResult } from '@/sanity.types';
+import type {
+  GetPageQueryResult,
+  PostQueryResult,
+  PostsArchiveQueryResult,
+} from '@/sanity.types';
 
-export type PostCardFragmentType = NonNullable<PostsArchiveQueryResult['results'][number]>;
+export type PostCardFragmentType = NonNullable<
+  PostsArchiveQueryResult['results'][number]
+>;
 export type PostFragmentType = NonNullable<PostQueryResult>;
 export type PersonFragmentType = NonNullable<PostFragmentType['author']>;
-export type CategoryFragmentType = NonNullable<PostFragmentType['categories']>[number];
+export type CategoryFragmentType = NonNullable<
+  PostFragmentType['categories']
+>[number];
 
 export type PageFragmentType = NonNullable<GetPageQueryResult>;
 export type SeoFragmentType = NonNullable<PageFragmentType['seo']>;
@@ -11,17 +19,58 @@ export type SeoFragmentType = NonNullable<PageFragmentType['seo']>;
 export type SectionsType = PageFragmentType['pageSections'];
 export type SectionType = NonNullable<SectionsType>[number];
 
-export type CardGridSectionFragmentType = Extract<SectionType, { _type: 'cardGrid' }>;
-export type ClassScheduleSectionFragmentType = Extract<SectionType, { _type: 'classSchedule' }>;
+export type CardGridSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'cardGrid' }
+>;
+export type ClassListSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'classList' }
+>;
+export type ClassScheduleSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'classSchedule' }
+>;
+export type ContactFormSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'contactForm' }
+>;
 export type CtaSectionFragmentType = Extract<SectionType, { _type: 'cta' }>;
-export type DividerSectionFragmentType = Extract<SectionType, { _type: 'divider' }>;
+export type DividerSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'divider' }
+>;
+export type DownloadListSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'downloadList' }
+>;
 export type HeroSectionFragmentType = Extract<SectionType, { _type: 'hero' }>;
-export type MediaTextSectionFragmentType = Extract<SectionType, { _type: 'mediaText' }>;
-export type PostListSectionFragmentType = Extract<SectionType, { _type: 'postList' }>;
-export type RegistrationCtaSectionFragmentType = Extract<SectionType, { _type: 'registrationCta' }>;
-export type RegistrationFormSectionFragmentType = Extract<SectionType, { _type: 'registrationForm' }>;
-export type SubscribeSectionFragmentType = Extract<SectionType, { _type: 'subscribe' }>;
+export type MediaTextSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'mediaText' }
+>;
+export type PostListSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'postList' }
+>;
+export type RegistrationCtaSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'registrationCta' }
+>;
+export type RegistrationFormSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'registrationForm' }
+>;
+export type SubscribeSectionFragmentType = Extract<
+  SectionType,
+  { _type: 'subscribe' }
+>;
+export type TeamSectionFragmentType = Extract<SectionType, { _type: 'team' }>;
 
-export type ButtonFragmentType = NonNullable<HeroSectionFragmentType['buttons']>[number];
-export type CardFragmentType = NonNullable<CardGridSectionFragmentType['cards']>[number];
+export type ButtonFragmentType = NonNullable<
+  HeroSectionFragmentType['buttons']
+>[number];
+export type CardFragmentType = NonNullable<
+  CardGridSectionFragmentType['cards']
+>[number];
 export type LinkFragmentType = NonNullable<ButtonFragmentType['link']>;

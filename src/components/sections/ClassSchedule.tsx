@@ -1,6 +1,7 @@
 import type { PortableTextBlock } from 'next-sanity';
 import type { ClassScheduleSectionFragmentType } from '@/lib/sanity/queries/fragments/fragment.types';
 import PortableText from '../modules/PortableText';
+import { Badge } from '../ui/Badge';
 
 export default function ClassSchedule({
   section: { eyebrow, heading, body, classes, uid },
@@ -12,22 +13,26 @@ export default function ClassSchedule({
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center mb-12">
           {eyebrow && (
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-2">
+            <p className="text-sm font-bold uppercase tracking-widest text-coral mb-2">
               {eyebrow}
             </p>
           )}
-          {heading && <h2 className="text-3xl md:text-4xl font-bold mb-4">{heading}</h2>}
+          {heading && (
+            <h2 className="font-display text-3xl md:text-4xl font-semibold mb-4 text-navy">
+              {heading}
+            </h2>
+          )}
           {body && (
-            <div className="text-lg text-gray-600">
+            <div className="text-lg text-navy/70">
               <PortableText value={body as PortableTextBlock[]} />
             </div>
           )}
         </div>
 
         {classes && classes.length > 0 && (
-          <div className="overflow-x-auto rounded-2xl border border-gray-200">
+          <div className="overflow-x-auto rounded-3xl border border-border shadow-sm">
             <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50 text-gray-700 uppercase text-xs tracking-wider">
+              <thead className="bg-navy text-white uppercase text-xs tracking-wider">
                 <tr>
                   <th className="px-6 py-4">Class</th>
                   <th className="px-6 py-4">Age Group</th>
@@ -36,19 +41,30 @@ export default function ClassSchedule({
                   <th className="px-6 py-4">Rate</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-border">
                 {classes.map((cls) => (
-                  <tr key={cls._key} className="bg-white hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                  <tr
+                    key={cls._key}
+                    className="bg-white hover:bg-offwhite transition-colors"
+                  >
+                    <td className="px-6 py-4 font-semibold text-navy">
                       {cls.title}
                       {cls.description && (
-                        <p className="text-gray-500 font-normal mt-1">{cls.description}</p>
+                        <p className="text-muted-foreground font-normal mt-1">
+                          {cls.description}
+                        </p>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{cls.ageGroup}</td>
-                    <td className="px-6 py-4 text-gray-600">{cls.day}</td>
-                    <td className="px-6 py-4 text-gray-600">{cls.time}</td>
-                    <td className="px-6 py-4 text-gray-600">{cls.rate}</td>
+                    <td className="px-6 py-4">
+                      {cls.ageGroup && (
+                        <Badge variant="sky">{cls.ageGroup}</Badge>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-navy/70">{cls.day}</td>
+                    <td className="px-6 py-4 text-navy/70">{cls.time}</td>
+                    <td className="px-6 py-4 font-semibold text-coral">
+                      {cls.rate}
+                    </td>
                   </tr>
                 ))}
               </tbody>

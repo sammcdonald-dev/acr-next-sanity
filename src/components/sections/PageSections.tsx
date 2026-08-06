@@ -4,31 +4,42 @@ import type { SanityDocument } from 'next-sanity';
 import { useOptimistic } from 'next-sanity/hooks';
 import type { ElementType } from 'react';
 import { dataAttr } from '@/lib/sanity/client/utils';
-import type { SectionsType, SectionType } from '@/lib/sanity/queries/fragments/fragment.types';
+import type {
+  SectionsType,
+  SectionType,
+} from '@/lib/sanity/queries/fragments/fragment.types';
 import CardGrid from './CardGrid';
+import ClassList from './ClassList';
 import ClassSchedule from './ClassSchedule';
+import ContactFormSection from './ContactFormSection';
 import CTA from './CTA';
 import Divider from './Divider';
+import DownloadList from './DownloadList';
 import Hero from './Hero';
 import MediaText from './MediaText';
 import PostList from './PostList';
 import RegistrationCta from './RegistrationCta';
 import RegistrationFormSection from './RegistrationFormSection';
 import Subscribe from './Subscribe';
+import Team from './Team';
 
 type PageSectionstype = SectionType['_type'];
 
 const SECTION_COMPONENTS: Record<PageSectionstype, ElementType> = {
   cardGrid: CardGrid,
+  classList: ClassList,
   classSchedule: ClassSchedule,
+  contactForm: ContactFormSection,
   cta: CTA,
   divider: Divider,
+  downloadList: DownloadList,
   hero: Hero,
   mediaText: MediaText,
   postList: PostList,
   registrationCta: RegistrationCta,
   registrationForm: RegistrationFormSection,
   subscribe: Subscribe,
+  team: Team,
 } as const;
 
 type PageSectionsProps = {
@@ -55,10 +66,11 @@ export default function PageSections({
 
       return action.document.pageSections.map(
         (section) =>
-          currentSections?.find((currentSection) => currentSection._key === section?._key) ||
-          section,
+          currentSections?.find(
+            (currentSection) => currentSection._key === section?._key
+          ) || section
       );
-    },
+    }
   );
 
   if (!sections?.length) {

@@ -109,21 +109,23 @@ export default function RegistrationForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
       {/* Program selection */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">Program</h2>
+      <section className="rounded-3xl border border-border bg-white p-6 shadow-sm">
+        <h2 className="font-display mb-4 text-lg font-semibold text-navy">
+          Program
+        </h2>
         <div>
           <label
             htmlFor="productId"
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="mb-1 block text-sm font-medium text-navy/80"
           >
-            Select a program <span className="text-red-500">*</span>
+            Select a program <span className="text-coral">*</span>
           </label>
           <select
             id="productId"
             value={form.productId}
             onChange={set('productId')}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky"
           >
             <option value="">— Choose a program —</option>
             {products.map((p) => (
@@ -142,8 +144,8 @@ export default function RegistrationForm({
       </section>
 
       {/* Student / camper info */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">
+      <section className="rounded-3xl border border-border bg-white p-6 shadow-sm">
+        <h2 className="font-display mb-4 text-lg font-semibold text-navy">
           Student / Camper
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -191,8 +193,8 @@ export default function RegistrationForm({
       </section>
 
       {/* Parent / guardian info */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">
+      <section className="rounded-3xl border border-border bg-white p-6 shadow-sm">
+        <h2 className="font-display mb-4 text-lg font-semibold text-navy">
           Parent / Guardian
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -238,7 +240,7 @@ export default function RegistrationForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-gradient-to-r from-pink-500 to-blue-500 py-3 font-semibold text-white shadow-sm transition hover:from-pink-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-full bg-gradient-to-r from-coral to-gold py-3 font-bold text-navy shadow-sm transition hover:from-coral-dark hover:to-gold-dark hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
       >
         {loading ? 'Redirecting to checkout…' : submitButtonLabel}
       </button>
@@ -271,9 +273,9 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="mb-1 block text-sm font-medium text-gray-700"
+        className="mb-1 block text-sm font-medium text-navy/80"
       >
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} {required && <span className="text-coral">*</span>}
       </label>
       <input
         id={id}
@@ -284,7 +286,7 @@ function Field({
         required={required}
         min={min}
         max={max}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
+        className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky"
       />
     </div>
   );
