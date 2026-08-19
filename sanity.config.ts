@@ -16,6 +16,7 @@ import {
 } from 'sanity/presentation';
 import { structureTool } from 'sanity/structure';
 import { clientEnv } from '@/env/clientEnv';
+import { HeicUploadAdapter } from './src/studio/components/HeicUploadAdapter';
 import { schemaTypes } from './src/studio/schema';
 import { structure } from './src/studio/structure';
 
@@ -83,7 +84,7 @@ export default defineConfig({
               locations: [
                 {
                   title: doc?.name || 'Untitled',
-                  href: resolveHref('page', doc?.slug)!,
+                  href: resolveHref('page', doc?.slug) || '/',
                 },
               ],
             }),
@@ -97,7 +98,7 @@ export default defineConfig({
               locations: [
                 {
                   title: doc?.title || 'Untitled',
-                  href: resolveHref('post', doc?.slug)!,
+                  href: resolveHref('post', doc?.slug) || '/',
                 },
                 {
                   title: 'Home',
@@ -118,5 +119,15 @@ export default defineConfig({
   ],
   schema: {
     types: schemaTypes,
+  },
+
+  // Register the image adapter globally for all image fields
+  form: {
+    image: {
+      assetSources: (previousAssetSources) => {
+        // Keeps the default Sanity library view, but adds your HEIC converter options
+        return [...previousAssetSources, HeicUploadAdapter];
+      },
+    },
   },
 });
