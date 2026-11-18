@@ -10,6 +10,9 @@ const envSchema = {
   STRIPE_WEBHOOK_SECRET: v.optional(v.pipe(v.string(), v.minLength(1))),
   SANITY_WEBHOOK_SECRET: v.optional(v.pipe(v.string(), v.minLength(1))),
   RESEND_API_KEY: v.optional(v.pipe(v.string(), v.minLength(1))),
+  // Optional so a missing key can't break unrelated routes; verifyTurnstile
+  // fails closed when it is unset.
+  TURNSTILE_SECRET_KEY: v.optional(v.pipe(v.string(), v.minLength(1))),
 };
 const serverEnv = createEnv(envSchema);
 export { serverEnv };

@@ -1,9 +1,11 @@
 'use client';
 
+import type { TurnstileInstance } from '@marsidev/react-turnstile';
 import { useActionState, useRef } from 'react';
 import { contactAction } from '@/actions/contactAction';
 import type { ActionResponse } from '@/actions/types';
 import { Button } from '@/components/ui/Button';
+import TurnstileWidget from './TurnstileWidget';
 
 export default function ContactForm({
   submitButtonLabel,
@@ -11,6 +13,7 @@ export default function ContactForm({
   submitButtonLabel: string;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
   const [state, formAction, pending] = useActionState<
     Partial<ActionResponse>,
     FormData
@@ -19,6 +22,8 @@ export default function ContactForm({
     if (result.status === 'success') {
       formRef.current?.reset();
     }
+    // Tokens are single-use, so get a fresh one after every attempt.
+    turnstileRef.current?.reset();
     return result;
   }, {});
 
@@ -69,6 +74,8 @@ export default function ContactForm({
           className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky"
         />
       </div>
+
+      <TurnstileWidget action="contact" ref={turnstileRef} />
 
       <Button type="submit" size="lg" disabled={pending}>
         {pending ? 'Sending…' : submitButtonLabel}

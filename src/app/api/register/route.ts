@@ -1,8 +1,10 @@
 import Stripe from 'stripe';
+import * as v from 'valibot';
 import { clientEnv } from '@/env/clientEnv';
 import { serverEnv } from '@/env/serverEnv';
 import { client } from '@/lib/sanity/client/client';
 import { getTermCancelAtUnix } from '@/lib/subscriptionTerm';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 const productQuery = /* groq */ `
   *[_type == "product" && _id == $productId][0]{
@@ -15,20 +17,21 @@ const productQuery = /* groq */ `
   }
 `;
 
-type Student = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  age: number;
-};
+const name = v.pipe(v.string(), v.trim(), v.minLength(1), v.maxLength(100));
+const email = v.pipe(v.string(), v.trim(), v.email(), v.maxLength(254));
+const phone = v.pipe(v.string(), v.trim(), v.minLength(1), v.maxLength(30));
 
-type Parent = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-};
+const RegistrationSchema = v.object({
+  productId: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
+  student: v.object({
+    firstName: name,
+    lastName: name,
+    email,
+    phone,
+    age: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
+  }),
+  parent: v.object({ firstName: name, lastName: name, email, phone }),
+});
 
 export async function POST(req: Request) {
   const stripe = new Stripe(serverEnv.STRIPE_SECRET_KEY);
@@ -41,16 +44,31 @@ export async function POST(req: Request) {
     useCdn: false,
   });
 
-  const body = await req.json();
-  const { productId, student, parent } = body as {
-    productId: string;
-    student: Student;
-    parent: Parent;
-  };
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: 'Invalid request' }, { status: 400 });
+  }
 
-  if (!productId || !student || !parent) {
+  // Verify the bot check before touching Sanity or Stripe.
+  const humanVerified = await verifyTurnstile({
+    token: (body as { turnstileToken?: unknown } | null)?.turnstileToken,
+    action: 'registration',
+    ip: req.headers.get('cf-connecting-ip'),
+  });
+  if (!humanVerified) {
+    return Response.json(
+      { error: 'Bot check failed. Please refresh the page and try again.' },
+      { status: 403 }
+    );
+  }
+
+  const parsed = v.safeParse(RegistrationSchema, body);
+  if (!parsed.success) {
     return Response.json({ error: 'Missing required fields' }, { status: 400 });
   }
+  const { productId, student, parent } = parsed.output;
 
   const product = await readClient.fetch<{
     _id: string;

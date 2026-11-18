@@ -2,6 +2,7 @@
   "name": "acr-cms",
   "version": "1.0.0",
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.6.3",
     "@next/bundle-analyzer": "^15.2.4",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-navigation-menu": "^1.2.5",

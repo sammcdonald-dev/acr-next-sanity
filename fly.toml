@@ -18,6 +18,7 @@ ignorefile = 'Dockerfile.dockerignore'
   NEXT_PUBLIC_SANITY_API_VERSION = '2026-08-22'
   NEXT_PUBLIC_SANITY_STUDIO_URL = 'https://actorscraftroom.com/studio'
   NEXT_PUBLIC_SITE_URL = 'https://actorscraftroom.com'
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY = '0x4AAAAAAGGWWTBFTyar0WEf'
 
 [http_service]
   internal_port = 3000
