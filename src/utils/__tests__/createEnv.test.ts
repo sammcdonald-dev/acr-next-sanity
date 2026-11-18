@@ -7,6 +7,8 @@ describe('createEnv', () => {
 
   beforeEach(() => {
     originalEnv = { ...process.env };
+    // createEnv validates lazily and skips validation when this is set
+    delete process.env.SKIP_ENV_VALIDATION;
   });
 
   afterEach(() => {
@@ -20,8 +22,8 @@ describe('createEnv', () => {
       TEST_VAR: v.string(),
     };
 
-    const result = createEnv(schema);
-    expect(result).toEqual({ TEST_VAR: 'value' });
+    const env = createEnv(schema);
+    expect(env.TEST_VAR).toBe('value');
   });
 
   it('should throw an error if process is not available', () => {
@@ -34,7 +36,7 @@ describe('createEnv', () => {
     };
 
     expect(() => createEnv(schema)).toThrow(
-      'process is not available. This function should run in a Node.js environment.',
+      'process is not available. This function should run in a Node.js environment.'
     );
 
     global.process = originalProcess;
@@ -47,7 +49,8 @@ describe('createEnv', () => {
       MISSING_VAR: v.string(),
     };
 
-    expect(() => createEnv(schema)).toThrow();
+    const env = createEnv(schema);
+    expect(() => env.MISSING_VAR).toThrow();
   });
 
   it('should throw an error if an environment variable does not match the schema', () => {
@@ -57,6 +60,21 @@ describe('createEnv', () => {
       NUMBER_VAR: v.number(),
     };
 
-    expect(() => createEnv(schema)).toThrow();
+    const env = createEnv(schema);
+    expect(() => env.NUMBER_VAR).toThrow();
+  });
+
+  it('should not validate until a value is read', () => {
+    delete process.env.MISSING_VAR;
+
+    expect(() => createEnv({ MISSING_VAR: v.string() })).not.toThrow();
+  });
+
+  it('should skip validation when SKIP_ENV_VALIDATION is set', () => {
+    process.env.SKIP_ENV_VALIDATION = '1';
+    delete process.env.MISSING_VAR;
+
+    const env = createEnv({ MISSING_VAR: v.string() });
+    expect(env.MISSING_VAR).toBeUndefined();
   });
 });

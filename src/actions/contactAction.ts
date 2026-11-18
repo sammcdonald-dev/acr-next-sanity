@@ -5,6 +5,7 @@ import * as v from 'valibot';
 import { serverEnv } from '@/env/serverEnv';
 import { sanityFetch } from '@/lib/sanity/client/live';
 import { settingsQuery } from '@/lib/sanity/queries/queries';
+import { verifyTurnstile } from '@/lib/turnstile';
 import type { ActionResponse } from './types';
 
 const ContactSchema = v.object({
@@ -23,6 +24,17 @@ export const contactAction = async (
   'use server';
 
   try {
+    const humanVerified = await verifyTurnstile({
+      token: formData.get('cf-turnstile-response'),
+      action: 'contact',
+    });
+    if (!humanVerified) {
+      return {
+        status: 'error',
+        error: 'Bot check failed. Please refresh the page and try again.',
+      };
+    }
+
     const { name, email, message } = v.parse(ContactSchema, {
       name: formData.get('name'),
       email: formData.get('email'),

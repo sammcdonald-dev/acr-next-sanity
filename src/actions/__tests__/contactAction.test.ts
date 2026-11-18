@@ -7,11 +7,13 @@ vi.mock('resend', () => ({
 }));
 
 vi.mock('@/lib/sanity/client/live', () => ({
-  sanityFetch: vi
-    .fn()
-    .mockResolvedValue({
-      data: { title: 'Test Studio', email: 'owner@example.com' },
-    }),
+  sanityFetch: vi.fn().mockResolvedValue({
+    data: { title: 'Test Studio', email: 'owner@example.com' },
+  }),
+}));
+
+vi.mock('@/lib/turnstile', () => ({
+  verifyTurnstile: vi.fn().mockResolvedValue(true),
 }));
 
 vi.mock('@/env/serverEnv', () => ({

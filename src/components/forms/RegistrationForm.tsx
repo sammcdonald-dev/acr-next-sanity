@@ -1,6 +1,9 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import type { TurnstileInstance } from '@marsidev/react-turnstile';
+import { type FormEvent, useRef, useState } from 'react';
+import { clientEnv } from '@/env/clientEnv';
+import TurnstileWidget from './TurnstileWidget';
 
 type Product = {
   _id: string;
@@ -58,6 +61,15 @@ export default function RegistrationForm({
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
+  const turnstileEnabled = Boolean(clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+
+  // Tokens are single-use, so get a fresh one after every attempt.
+  function resetTurnstile() {
+    setTurnstileToken(null);
+    turnstileRef.current?.reset();
+  }
 
   function set(field: keyof FormState) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -88,6 +100,7 @@ export default function RegistrationForm({
             email: form.parentEmail,
             phone: form.parentPhone,
           },
+          turnstileToken,
         }),
       });
 
@@ -95,12 +108,14 @@ export default function RegistrationForm({
 
       if (!res.ok || !data.url) {
         setError(data.error ?? 'Something went wrong. Please try again.');
+        resetTurnstile();
         return;
       }
 
       window.location.href = data.url;
     } catch {
       setError('Something went wrong. Please try again.');
+      resetTurnstile();
     } finally {
       setLoading(false);
     }
@@ -237,9 +252,15 @@ export default function RegistrationForm({
         </p>
       )}
 
+      <TurnstileWidget
+        action="registration"
+        onToken={setTurnstileToken}
+        ref={turnstileRef}
+      />
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || (turnstileEnabled && !turnstileToken)}
         className="w-full rounded-full bg-gradient-to-r from-coral to-gold py-3 font-bold text-navy shadow-sm transition hover:from-coral-dark hover:to-gold-dark hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
       >
         {loading ? 'Redirecting to checkout…' : submitButtonLabel}
